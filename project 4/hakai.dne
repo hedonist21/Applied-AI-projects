@@ -1,0 +1,599 @@
+// ~->[DNET-1]->~
+
+// File created by GmytrasiewiczP_2 at UIC using Netica 5.22x on Apr 09, 2018 at 06:00:28 UTC.
+
+bnet hakai {
+AutoCompile = TRUE;
+autoupdate = TRUE;
+whenchanged = 1523253608;
+
+visual V2 {
+	defdispform = BELIEFBARS;
+	nodelabeling = TITLE;
+	NodeMaxNumEntries = 50;
+	nodefont = font {shape= "Arial"; size= 9;};
+	linkfont = font {shape= "Arial"; size= 9;};
+	windowposn = (20, -22, 1352, 595);
+	resolution = 72;
+	drawingbounds = (1345, 720);
+	showpagebreaks = FALSE;
+	usegrid = TRUE;
+	gridspace = (6, 6);
+	NodeSet Node {BuiltIn = 1; Color = 0x00e1e1e1;};
+	NodeSet Nature {BuiltIn = 1; Color = 0x00f8eed2;};
+	NodeSet Deterministic {BuiltIn = 1; Color = 0x00d3caa6;};
+	NodeSet Finding {BuiltIn = 1; Color = 0x00c8c8c8;};
+	NodeSet Constant {BuiltIn = 1; Color = 0x00ffffff;};
+	NodeSet ConstantValue {BuiltIn = 1; Color = 0x00ffffb4;};
+	NodeSet Utility {BuiltIn = 1; Color = 0x00ffbdbd;};
+	NodeSet Decision {BuiltIn = 1; Color = 0x00dee8ff;};
+	NodeSet Documentation {BuiltIn = 1; Color = 0x00f0fafa;};
+	NodeSet Title {BuiltIn = 1; Color = 0x00ffffff;};
+	PrinterSetting A {
+		margins = (1270, 1270, 1270, 1270);
+		};
+	};
+
+node Gender {
+	kind = NATURE;
+	discrete = TRUE;
+	states = (male, female);
+	parents = ();
+	ExperBase = 1;
+	whenchanged = 1521528489;
+	belief = (0.5, 0.5);
+	visual V2 {
+		center = (882, 96);
+		height = 16;
+		};
+	};
+
+node Age {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (lessthan60, morethan60);
+	parents = ();
+	probs = 
+		// lessthan60   morethan60   
+		  (0.3,         0.7);
+	whenchanged = 1521528976;
+	belief = (0.3, 0.7);
+	visual V2 {
+		center = (750, 36);
+		height = 25;
+		};
+	};
+
+node beta_HCH {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (exposed, notExposed);
+	parents = ();
+	probs = 
+		// exposed      notExposed   
+		  (0.3,         0.7);
+	whenchanged = 1521752477;
+	belief = (0.3, 0.7);
+	visual V2 {
+		center = (852, 486);
+		height = 7;
+		};
+	};
+
+node dichlorophenoxyacetic_acid {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (exposed, notExposed);
+	parents = ();
+	probs = 
+		// exposed      notExposed   
+		  (0.3,         0.7);
+	whenchanged = 1521752598;
+	belief = (0.3, 0.7);
+	visual V2 {
+		center = (960, 558);
+		height = 8;
+		};
+	};
+
+node Agent_Orange {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (exposed, notExposed);
+	parents = ();
+	probs = 
+		// exposed      notExposed   
+		  (0.3,         0.7);
+	whenchanged = 1521752791;
+	belief = (0.3, 0.7);
+	visual V2 {
+		center = (1176, 546);
+		height = 9;
+		};
+	};
+
+node Pesticide_exposure {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (beta_HCH, dichlorophenoxyacetic_acid, Agent_Orange);
+	probs = 
+		// yes          no            // beta_HCH   dichlorophenoxyacetic_acid Agent_Orange 
+		  (1,           0,            // exposed    exposed                    exposed      
+		   0.6667,      0.3333,       // exposed    exposed                    notExposed   
+		   0.6667,      0.3333,       // exposed    notExposed                 exposed      
+		   0.3333,      0.6667,       // exposed    notExposed                 notExposed   
+		   0.6667,      0.3333,       // notExposed exposed                    exposed      
+		   0.3333,      0.6667,       // notExposed exposed                    notExposed   
+		   0.3333,      0.6667,       // notExposed notExposed                 exposed      
+		   0,           1);           // notExposed notExposed                 notExposed   ;
+	numcases = 1;
+	whenchanged = 1521753281;
+	belief = (0.2999916, 0.7000084);
+	visual V2 {
+		center = (1050, 396);
+		height = 6;
+		link 3 {
+			path = ((1155, 520), (1072, 423));
+			};
+		};
+	};
+
+node MPTP_exposure {
+	kind = NATURE;
+	discrete = TRUE;
+	states = (yes, no);
+	parents = ();
+	ExperBase = 1;
+	whenchanged = 1521527947;
+	belief = (0.5, 0.5);
+	visual V2 {
+		center = (1224, 324);
+		height = 4;
+		};
+	};
+
+node Toxic_exposure {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = DETERMIN;
+	states = (exposed, notExposed);
+	parents = (Pesticide_exposure, MPTP_exposure);
+	functable = 
+		                    // Pesticide_exposure MPTP_exposure 
+		  (exposed,         // yes                yes           
+		   exposed,         // yes                no            
+		   exposed,         // no                 yes           
+		   notExposed);     // no                 no            ;
+	whenchanged = 1521753284;
+	belief = (0.6499958, 0.3500042);
+	visual V2 {
+		center = (1008, 288);
+		height = 10;
+		};
+	};
+
+node PARKIN {
+	kind = NATURE;
+	discrete = TRUE;
+	states = (yes, no);
+	parents = ();
+	ExperBase = 1;
+	whenchanged = 1521527947;
+	belief = (0.5, 0.5);
+	visual V2 {
+		center = (1224, 54);
+		height = 1;
+		};
+	};
+
+node PINK_1 {
+	kind = NATURE;
+	discrete = TRUE;
+	states = (yes, no);
+	parents = ();
+	ExperBase = 1;
+	whenchanged = 1521527947;
+	belief = (0.5, 0.5);
+	visual V2 {
+		center = (1218, 114);
+		height = 2;
+		};
+	};
+
+node Alpho_Synuclein {
+	kind = NATURE;
+	discrete = TRUE;
+	states = (yes, no);
+	parents = ();
+	ExperBase = 1;
+	whenchanged = 1521527947;
+	belief = (0.5, 0.5);
+	visual V2 {
+		center = (1224, 174);
+		height = 3;
+		};
+	};
+
+node ALDH2 {
+	kind = NATURE;
+	discrete = TRUE;
+	states = (yes, no);
+	parents = ();
+	whenchanged = 1521752309;
+	belief = (0.5, 0.5);
+	visual V2 {
+		center = (1230, 240);
+		height = 5;
+		};
+	};
+
+node genetic_mutation {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (PARKIN, PINK_1, Alpho_Synuclein, ALDH2);
+	probs = 
+		// yes          no            // PARKIN PINK_1 Alpho_Synuclein ALDH2 
+		  (1,           0,            // yes    yes    yes             yes   
+		   0.75,        0.25,         // yes    yes    yes             no    
+		   0.75,        0.25,         // yes    yes    no              yes   
+		   0.5,         0.5,          // yes    yes    no              no    
+		   0.75,        0.25,         // yes    no     yes             yes   
+		   0.5,         0.5,          // yes    no     yes             no    
+		   0.5,         0.5,          // yes    no     no              yes   
+		   0.25,        0.75,         // yes    no     no              no    
+		   0.75,        0.25,         // no     yes    yes             yes   
+		   0.5,         0.5,          // no     yes    yes             no    
+		   0.5,         0.5,          // no     yes    no              yes   
+		   0.5,         0.5,          // no     yes    no              no    
+		   0.5,         0.5,          // no     no     yes             yes   
+		   0.25,        0.75,         // no     no     yes             no    
+		   0.25,        0.75,         // no     no     no              yes   
+		   0,           1);           // no     no     no              no    ;
+	numcases = 1;
+	whenchanged = 1521753227;
+	belief = (0.515625, 0.484375);
+	visual V2 {
+		center = (1038, 144);
+		height = 15;
+		};
+	};
+
+node Parkinson_desease {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (present, absent);
+	parents = (Age, Toxic_exposure, genetic_mutation, Gender);
+	probs = 
+		// present      absent        // Age        Toxic_exposure genetic_mutation Gender 
+		  (0.8,         0.2,          // lessthan60 exposed        yes              male   
+		   0.75,        0.25,         // lessthan60 exposed        yes              female 
+		   0.65,        0.35,         // lessthan60 exposed        no               male   
+		   0.55,        0.45,         // lessthan60 exposed        no               female 
+		   0.5,         0.5,          // lessthan60 notExposed     yes              male   
+		   0.45,        0.55,         // lessthan60 notExposed     yes              female 
+		   0.2,         0.8,          // lessthan60 notExposed     no               male   
+		   0.2,         0.8,          // lessthan60 notExposed     no               female 
+		   0.9,         0.1,          // morethan60 exposed        yes              male   
+		   0.8,         0.2,          // morethan60 exposed        yes              female 
+		   0.7,         0.3,          // morethan60 exposed        no               male   
+		   0.65,        0.35,         // morethan60 exposed        no               female 
+		   0.4,         0.6,          // morethan60 notExposed     yes              male   
+		   0.35,        0.65,         // morethan60 notExposed     yes              female 
+		   0.3,         0.7,          // morethan60 notExposed     no               male   
+		   0.2,         0.8);         // morethan60 notExposed     no               female ;
+	whenchanged = 1521756032;
+	belief = (0.5957053, 0.4042947);
+	visual V2 {
+		center = (600, 228);
+		height = 14;
+		};
+	};
+
+node Motor_fn {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (present, absent);
+	parents = (Parkinson_desease);
+	probs = 
+		// present      absent        // Parkinson_desease 
+		  (0.68,        0.32,         // present           
+		   0.5,         0.5);         // absent            ;
+	whenchanged = 1521754563;
+	belief = (0.607227, 0.3927731);
+	visual V2 {
+		center = (642, 396);
+		height = 17;
+		};
+	};
+
+node Non_mortor {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (present, absent);
+	parents = (Parkinson_desease);
+	probs = 
+		// present      absent        // Parkinson_desease 
+		  (0.8,         0.2,          // present           
+		   0.35,        0.65);        // absent            ;
+	numcases = 1;
+	whenchanged = 1521753386;
+	belief = (0.6180674, 0.3819326);
+	visual V2 {
+		center = (330, 288);
+		height = 22;
+		};
+	};
+
+node Disease_progression {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = DETERMIN;
+	states = (early_stage, late_stage);
+	parents = (Parkinson_desease, Age);
+	functable = 
+		                    // Parkinson_desease Age        
+		  (early_stage,     // present           lessthan60 
+		   late_stage,      // present           morethan60 
+		   @undef,          // absent            lessthan60 
+		   @undef);         // absent            morethan60 ;
+	whenchanged = 1523253479;
+	belief = (0.3726313, 0.6273687);
+	visual V2 {
+		center = (444, 48);
+		height = 23;
+		};
+	};
+
+node Movement_difficulty {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (present, absent);
+	parents = (Motor_fn);
+	probs = 
+		// present      absent        // Motor_fn 
+		  (0.8,         0.2,          // present  
+		   0.35,        0.65);        // absent   ;
+	whenchanged = 1521754730;
+	belief = (0.6232522, 0.3767479);
+	visual V2 {
+		center = (390, 492);
+		height = 21;
+		};
+	};
+
+node Stiffness {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Motor_fn);
+	probs = 
+		// yes          no            // Motor_fn 
+		  (0.75,        0.25,         // present  
+		   0.4,         0.6);         // absent   ;
+	whenchanged = 1521755241;
+	belief = (0.6125294, 0.3874706);
+	visual V2 {
+		center = (402, 570);
+		height = 20;
+		};
+	};
+
+node Involuntary_shakiness {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Motor_fn);
+	probs = 
+		// yes          no            // Motor_fn 
+		  (0.8,         0.2,          // present  
+		   0.35,        0.65);        // absent   ;
+	whenchanged = 1521755296;
+	belief = (0.6232522, 0.3767479);
+	visual V2 {
+		center = (576, 570);
+		height = 19;
+		};
+	};
+
+node Postural_instability {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Motor_fn);
+	probs = 
+		// yes          no            // Motor_fn 
+		  (0.77,        0.23,         // present  
+		   0.39,        0.61);        // absent   ;
+	whenchanged = 1521755314;
+	belief = (0.6207462, 0.3792538);
+	visual V2 {
+		center = (744, 570);
+		height = 18;
+		};
+	};
+
+node Depression {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Non_mortor);
+	probs = 
+		// yes          no            // Non_mortor 
+		  (0.7,         0.3,          // present    
+		   0.4,         0.6);         // absent     ;
+	numcases = 1;
+	whenchanged = 1521753543;
+	belief = (0.5854202, 0.4145798);
+	visual V2 {
+		center = (108, 108);
+		height = 29;
+		};
+	};
+
+node Dementia {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Non_mortor);
+	probs = 
+		// yes          no            // Non_mortor 
+		  (0.65,        0.35,         // present    
+		   0.2,         0.8);         // absent     ;
+	numcases = 1;
+	whenchanged = 1521753559;
+	belief = (0.4781303, 0.5218697);
+	visual V2 {
+		center = (108, 168);
+		height = 28;
+		};
+	};
+
+node Sleep_Disturance {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Non_mortor);
+	probs = 
+		// yes          no            // Non_mortor 
+		  (0.7,         0.3,          // present    
+		   0.65,        0.35);        // absent     ;
+	numcases = 1;
+	whenchanged = 1521753575;
+	belief = (0.6809034, 0.3190966);
+	visual V2 {
+		center = (108, 234);
+		height = 27;
+		};
+	};
+
+node Difficulty_smelling {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Non_mortor);
+	probs = 
+		// yes          no            // Non_mortor 
+		  (0.67,        0.33,         // present    
+		   0.3,         0.7);         // absent     ;
+	whenchanged = 1521754607;
+	belief = (0.5286849, 0.4713151);
+	visual V2 {
+		center = (108, 306);
+		height = 26;
+		};
+	};
+
+node selegiline {
+	kind = DECISION;
+	discrete = TRUE;
+	chance = DETERMIN;
+	states = (high_dose, medium_dose, low_dose);
+	parents = ();
+	functable = 
+		  (high_dose);
+	whenchanged = 1523253270;
+	belief = (0.3333333, 0.3333333, 0.3333333);
+	visual V2 {
+		center = (378, 180);
+		height = 24;
+		};
+	};
+
+node Improvement_in_health {
+	kind = UTILITY;
+	discrete = FALSE;
+	measure = RATIO;
+	chance = DETERMIN;
+	parents = (Disease_progression, selegiline);
+	functable = 
+		                 // Disease_progression selegiline  
+		  (100,          // early stage         high dose   
+		   80,           // early stage         medium dose 
+		   50,           // early stage         low dose    
+		   30,           // late stage          high dose   
+		   15,           // late stage          medium dose 
+		   0);           // late stage          low dose    ;
+	whenchanged = 1523253608;
+	visual V2 {
+		center = (180, 36);
+		height = 30;
+		};
+	};
+
+node Bradykinesea {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Movement_difficulty);
+	probs = 
+		// yes          no            // Movement_difficulty 
+		  (0.79,        0.21,         // present             
+		   0.4,         0.6);         // absent              ;
+	numcases = 1;
+	whenchanged = 1521755177;
+	belief = (0.6430683, 0.3569317);
+	visual V2 {
+		center = (102, 426);
+		height = 13;
+		};
+	};
+
+node Hypokinesea {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Movement_difficulty);
+	probs = 
+		// yes          no            // Movement_difficulty 
+		  (0.7,         0.3,          // present             
+		   0.25,        0.75);        // absent              ;
+	numcases = 1;
+	whenchanged = 1521755206;
+	belief = (0.5304635, 0.4695365);
+	visual V2 {
+		center = (96, 504);
+		height = 12;
+		};
+	};
+
+node Akinesea {
+	kind = NATURE;
+	discrete = TRUE;
+	chance = CHANCE;
+	states = (yes, no);
+	parents = (Movement_difficulty);
+	probs = 
+		// yes          no            // Movement_difficulty 
+		  (0.6,         0.4,          // present             
+		   0.15,        0.85);        // absent              ;
+	numcases = 1;
+	whenchanged = 1521755218;
+	belief = (0.4304635, 0.5695365);
+	visual V2 {
+		center = (102, 576);
+		height = 11;
+		};
+	};
+ElimOrder = (Stiffness, Involuntary_shakiness, Postural_instability, Depression, Dementia, Sleep_Disturance, Difficulty_smelling, Bradykinesea, Hypokinesea, Akinesea, MPTP_exposure, Non_mortor, Movement_difficulty, Motor_fn, beta_HCH, dichlorophenoxyacetic_acid, Agent_Orange, Pesticide_exposure, Disease_progression, Gender, Toxic_exposure, PARKIN, PINK_1, Alpho_Synuclein, ALDH2, genetic_mutation, Age, Parkinson_desease, selegiline);
+};
